@@ -6,7 +6,6 @@
  *                                                                                           *
  ******************************************************************************************* */
 
-
 /**
  * Parses a rfc2822 string date representation into date value
  * For rfc2822 date specification refer to : http://tools.ietf.org/html/rfc2822#page-14
@@ -38,7 +37,6 @@ function parseDataFromIso8601(value) {
   return new Date(value);
 }
 
-
 /**
  * Returns true if specified date is leap year and false otherwise
  * Please find algorithm here: https://en.wikipedia.org/wiki/Leap_year#Algorithm
@@ -60,7 +58,6 @@ function isLeapYear(date) {
   }
   return !(year % 4);
 }
-
 
 /**
  * Returns the string representation of the timespan between two dates.
@@ -103,7 +100,6 @@ function timeSpanToString(startDate, endDate) {
   return `${returnTwoDigits(hours)}:${returnTwoDigits(mins)}:${returnTwoDigits(secs)}.${returnThreeDigits(diff)}`;
 }
 
-
 /**
  * Returns the angle (in radians) between the hands of an analog clock
  * for the specified Greenwich time.
@@ -131,7 +127,6 @@ function angleBetweenClockHands(date) {
   }
   return Math.PI * (diff / 180);
 }
-
 
 module.exports = {
   parseDataFromRfc2822,
