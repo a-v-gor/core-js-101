@@ -110,47 +110,67 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  result: '',
-  usedArr: [],
 
-  createObj(value) {
-    const obj = Object.create(cssSelectorBuilder);
-    obj.result = `${this.result}${value}`;
+  result: '',
+  arrUsed: [],
+
+  checkOnDouble(arr) {
+    const arrElem = arr.filter((i) => i === 0);
+    const arrID = arr.filter((i) => i === 1);
+    const arrPSE = arr.filter((i) => i === 5);
+    if (arrElem.length > 1 || arrID.length > 1 || arrPSE.length > 1) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+  },
+
+  checkPositions(arr) {
+    arr.forEach((i, idx) => {
+      if (i > arr[idx + 1]) {
+        throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+      }
+    });
+  },
+
+  returnNewObj(val, pos) {
+    const obj = Object.create(this);
+    obj.arrUsed = this.arrUsed.concat(pos);
+    obj.result = this.result + val;
+    this.checkOnDouble(obj.arrUsed);
+    this.checkPositions(obj.arrUsed);
     return obj;
   },
 
   element(value) {
-    return this.createObj(`${value}`);
+    return this.returnNewObj(value, 0);
   },
 
   id(value) {
-    return this.createObj(`#${value}`);
+    return this.returnNewObj(`#${value}`, 1);
   },
 
   class(value) {
-    return this.createObj(`.${value}`);
+    return this.returnNewObj(`.${value}`, 2);
   },
 
   attr(value) {
-    return this.createObj(`[${value}]`);
+    return this.returnNewObj(`[${value}]`, 3);
   },
 
   pseudoClass(value) {
-    return this.createObj(`:${value}`);
+    return this.returnNewObj(`:${value}`, 4);
   },
 
   pseudoElement(value) {
-    return this.createObj(`::${value}`);
+    return this.returnNewObj(`::${value}`, 5);
   },
 
   combine(selector1, combinator, selector2) {
-    const obj = Object.create(cssSelectorBuilder);
-    obj.result = `${selector1.result} ${combinator} ${selector2.result}`;
-    return obj;
+    const object = Object.create(this);
+    object.result = `${selector1.result} ${combinator} ${selector2.result}`;
+    return object;
   },
 
   stringify() {
-    console.log(this.result);
     return this.result;
   },
 };
